@@ -1,7 +1,6 @@
 from django.db import models
 
 
-
 class BookModel(models.Model):
     title = models.CharField(max_length=255) # title pour le titre du livre
     author = models.CharField(max_length=255) # author pour le nom  de l'auteur du livre
