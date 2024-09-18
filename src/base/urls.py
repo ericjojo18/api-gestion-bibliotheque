@@ -1,8 +1,8 @@
 """
-URL configuration for library project.
+URL configuration for forum_core project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+    https://docs.djangoproject.com/en/5.1/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -15,15 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include,re_path
-from rest_framework import routers
-
-
+from django.urls import include, path
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('books/', include("books.urls")),
-
+#    path('admin/', admin.site.urls),
+#    path('api/', include('api_rest.urls')),
 
 ]

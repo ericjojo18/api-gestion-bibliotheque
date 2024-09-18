@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # APPS INSTALLED
+    'books.apps.BooksConfig',
+    'users.apps.UsersConfig',
+    
     
     'rest_framework',
 ]
@@ -76,12 +80,12 @@ WSGI_APPLICATION = "library.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME":  "library_BD",
-        "USER": "postgres",
-        "PASSWORD": "",
-        'HOST': '127.0.0.1',  # Ou 'localhost'
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'library_BD',
+        'USER': 'postgres',
+        'PASSWORD': 'ella',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
