@@ -9,5 +9,9 @@ class BookModel(models.Model):
     publication_date = models.DateField() # pour la date de publication du livre
     available = models.BooleanField(default=True) # pour la disponibilie du livre
 
+
     def __str__(self):
         return f"{self.title}"
+
+
+
