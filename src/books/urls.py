@@ -5,7 +5,8 @@ from .viewsets.borrowing_viewset import BorrowingViewSet
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-
+from books.viewsets.reservation_views import reservation_detail_by_user
+from books.viewsets.reservation_views import reservation_detail_by_book
 
 app_name = 'books'
 
@@ -30,6 +31,8 @@ router.register(r'borrowings', BorrowingViewSet, basename='borrowing')
 urlpatterns = [
     
     path('', include(router.urls)),
+    path('reservation_detail_by_user/<int:id>/', reservation_detail_by_user, name='reservation_detail_by_user'),
+    path('reservation_detail_by_book/<int:id>/', reservation_detail_by_book, name='reservation_detail_by_book'),
     re_path(r'^swagger(?P<format>\.json|\.yanL)$', schema_view.without_ui(cache_timeout=0), name='shema-json'),
     re_path(r'swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

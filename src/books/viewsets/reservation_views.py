@@ -7,6 +7,8 @@ from books.serializers.reservation_serializer import ReservationSerializer
 from books.models.reservation_model import ReservationModel
 from books.models.book_model import BookModel
 from users.models import UserModel
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 
 class ReservationViewset(viewsets.ModelViewSet):
@@ -22,29 +24,6 @@ class ReservationViewset(viewsets.ModelViewSet):
         
         serializer = ReservationSerializer(reservation)
         return JsonResponse(serializer.data)
-    
-    
-    @action(detail=False, methods=['get'])
-    
-    def reservation_detail_by_user(self, request, user_id=None):
-        try:
-            reservations = ReservationModel.objects.filter(user=user_id)
-        except ReservationModel.DoesNotExist:
-            return HttpResponse(status=404)
-        
-        serializer = ReservationSerializer(reservations, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    
-    
-    @action(detail=False, methods=['get'])
-    def reservation_detail_by_book(self, request, book_id=None):
-        reservations = ReservationModel.objects.filter(book=book_id)
-        if not reservations.exists():
-            return HttpResponse(status=404)
-        
-        serializer = ReservationSerializer(reservations, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    
     def create(self, request, *args, **kwargs):
         data = request.data
         
@@ -78,3 +57,38 @@ class ReservationViewset(viewsets.ModelViewSet):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+    
+    #@action(detail=True, methods=['get'])
+@csrf_exempt
+def reservation_detail_by_user(request, id=None):
+        user = get_object_or_404(UserModel, id=id)
+        reservation = ReservationModel.objects.filter(user_id=user.id)
+
+        if not reservation.exists():
+            return HttpResponse(status=204)  
+
+        if request.method == 'GET':
+            serializer = ReservationSerializer(reservation, many=True)
+            return JsonResponse(serializer.data, safe=False)  
+    
+    
+# def reservation_detail_by_book(self, request, book_id=None):
+#         reservations = ReservationModel.objects.filter(book=book_id)
+#         if not reservations.exists():
+#             return HttpResponse(status=404)
+        
+#         serializer = ReservationSerializer(reservations, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+@csrf_exempt
+def reservation_detail_by_book(request, id=None):
+        book = get_object_or_404(BookModel, id=id)
+        reservation = ReservationModel.objects.filter(book_id=book.id)
+
+        if not reservation.exists():
+            return HttpResponse(status=204)  
+
+        if request.method == 'GET':
+            serializer = ReservationSerializer(reservation, many=True)
+            return JsonResponse(serializer.data, safe=False)  
+    
+    
