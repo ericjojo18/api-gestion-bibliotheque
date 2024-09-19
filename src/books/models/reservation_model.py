@@ -4,9 +4,9 @@ from .book_model import  BookModel
 
 
 class ReservationModel(models.Model):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, null=True)  # pour  un utilisateur qui a reserve un livre
-    book = models.ForeignKey(BookModel, on_delete=models.CASCADE, null=True)  # pour  un livre réserve
-    reservation_at = models.DateField(auto_now_add=True) # Date de reservation
-    status = models.BooleanField(default=True) # Status de la reservation
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, null=True)  
+    book = models.ForeignKey(BookModel, on_delete=models.CASCADE, null=True)  
+    reservation_at = models.DateField(auto_now_add=True) 
+    status = models.BooleanField(default=True) 
 
 

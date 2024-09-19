@@ -1,8 +1,12 @@
 from django.http import JsonResponse, HttpResponse
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from books.serializers.reservation_serializer import ReservationSerializer
 from books.models.reservation_model import ReservationModel
+from books.models.book_model import BookModel
+from users.models import UserModel
 
 
 class ReservationViewset(viewsets.ModelViewSet):
@@ -21,6 +25,7 @@ class ReservationViewset(viewsets.ModelViewSet):
     
     
     @action(detail=False, methods=['get'])
+    
     def reservation_detail_by_user(self, request, user_id=None):
         try:
             reservations = ReservationModel.objects.filter(user=user_id)
@@ -39,5 +44,37 @@ class ReservationViewset(viewsets.ModelViewSet):
         
         serializer = ReservationSerializer(reservations, many=True)
         return JsonResponse(serializer.data, safe=False)
+    
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        
+        user_id = data.get('user')
+        
+        try:
+            user = UserModel.objects.get(id=user_id)
+        except UserModel.DoesNotExist:
+            return Response({'error': 'Utilisateur introuvable'}, status=status.HTTP_404_NOT_FOUND)
 
+        book_id = data.get('book')  
+        try:
+            book = BookModel.objects.get(id=book_id)
+        except BookModel.DoesNotExist:
+            return Response({'error': 'Livre introuvable'}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+        if book.quantity <= 0:
+            return Response({'error': 'Aucun exemplaire disponible'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        serializer = ReservationSerializer(data=data)
+        if serializer.is_valid():
+            
+            book.quantity -= 1
+            book.save()
+            
+            
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
