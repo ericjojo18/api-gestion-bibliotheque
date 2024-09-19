@@ -1,34 +1,43 @@
-from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from books.serializers.reservation_serializer import ReservationSerializer
 from books.models.reservation_model import ReservationModel
 
 
-# Create your views here.
 class ReservationViewset(viewsets.ModelViewSet):
     serializer_class = ReservationSerializer
     queryset = ReservationModel.objects.all()
     
-    @csrf_exempt
-    def reservation_detail(request, id):
-        try :
-            reservation = ReservationModel.objects.get(id=id)
-        except ReservationModel.DoesNotExist : 
+    @action(detail=True, methods=['get'])
+    def reservation_detail(self, request, pk=None):
+        try:
+            reservation = ReservationModel.objects.get(id=pk)
+        except ReservationModel.DoesNotExist:
             return HttpResponse(status=404)
         
-        if request.method == 'GET':
-            serializer =  ReservationSerializer(reservation)
-            return JsonResponse(serializer.data)
+        serializer = ReservationSerializer(reservation)
+        return JsonResponse(serializer.data)
     
     
-    @csrf_exempt
-    def reservation_detail_by_user(request, id):
-        try :
-            reservation = ReservationModel.objects.filter(user = id)
-        except ReservationModel.DoesNotExist : 
+    @action(detail=False, methods=['get'])
+    def reservation_detail_by_user(self, request, user_id=None):
+        try:
+            reservations = ReservationModel.objects.filter(user=user_id)
+        except ReservationModel.DoesNotExist:
             return HttpResponse(status=404)
         
+        serializer = ReservationSerializer(reservations, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    
+    
+    @action(detail=False, methods=['get'])
+    def reservation_detail_by_book(self, request, book_id=None):
+        reservations = ReservationModel.objects.filter(book=book_id)
+        if not reservations.exists():
+            return HttpResponse(status=404)
         
-        if request.method == 'GET':
-            serializer =  ReservationSerializer(reservation,many=True)
-            return JsonResponse(serializer.data, safe=False)
+        serializer = ReservationSerializer(reservations, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+        

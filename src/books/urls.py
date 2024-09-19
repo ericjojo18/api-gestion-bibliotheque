@@ -1,6 +1,7 @@
 from rest_framework import routers
 from django.urls import path,re_path,include
 from .viewsets.reservation_views import ReservationViewset
+from .viewsets.borrowing_viewset import BorrowingViewSet
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
@@ -24,6 +25,7 @@ schema_view = get_schema_view(
 
 router = routers.DefaultRouter()
 router.register(r'reservations', ReservationViewset, basename='reservations')
+router.register(r'borrowings', BorrowingViewSet, basename='borrowing')
 
 urlpatterns = [
     
