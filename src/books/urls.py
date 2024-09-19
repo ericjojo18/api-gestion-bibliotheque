@@ -5,6 +5,12 @@ from rest_framework import permissions
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from .viewsets.borrowing_viewset import BorrowingViewSet
+from .viewsets.reservation_viewset import ReservationViewset
+from users.viewsets.user_viewset import UserViewSet
+from.viewsets.book_viewset import BookViewSet
+
+
+
 
 app_name = 'api'
 
@@ -25,6 +31,14 @@ schema_view = get_schema_view(
 # Créer un routeur pour les viewsets
 router = routers.DefaultRouter()
 router.register(r'borrow', BorrowingViewSet, basename='borrow')
+router.register(r'reservation', ReservationViewset, basename='reservation')
+router.register(r'user', UserViewSet, basename='user')
+router.register(r'book', BookViewSet, basename='book')
+
+
+
+
+
 
 # Définir les URL patterns
 urlpatterns = [
